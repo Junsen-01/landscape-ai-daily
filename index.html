@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>景观行业 AI 日报 | 源説研究社</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+            background: linear-gradient(135deg, #0a1f14 0%, #142a1c 50%, #0d2317 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #e0e0e0;
+        }
+        .container {
+            text-align: center;
+            padding: 40px;
+        }
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 24px;
+            background: linear-gradient(135deg, #4ADE80, #FBBF24);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+            color: #0a1f14;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 12px;
+            background: linear-gradient(90deg, #4ADE80, #FBBF24);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .subtitle {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 32px;
+        }
+        .date-badge {
+            display: inline-block;
+            background: rgba(74, 222, 128, 0.15);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            border-radius: 20px;
+            padding: 8px 24px;
+            font-size: 16px;
+            color: #4ADE80;
+            margin-bottom: 32px;
+        }
+        .link-btn {
+            display: inline-block;
+            background: linear-gradient(90deg, #4ADE80, #22C55E);
+            color: #0a1f14;
+            text-decoration: none;
+            padding: 14px 36px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        .link-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 30px rgba(74, 222, 128, 0.3);
+        }
+        .footer {
+            position: fixed;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: #555;
+            font-size: 12px;
+        }
+        .loading {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">景</div>
+        <h1>景观行业 Ai 日报</h1>
+        <p class="subtitle">源説研究社 · 每日精选</p>
+
+        <div class="date-badge loading" id="dateBadge">正在加载...</div>
+
+        <br><br>
+        <a href="#" id="linkBtn" class="link-btn">查看今日日报 →</a>
+    </div>
+
+    <div class="footer">
+        溯源派 · AI赋能者 — AI为表，文化为里
+    </div>
+
+    <script>
+        // 从 URL 参数获取目标日期，默认今天
+        const urlParams = new URLSearchParams(window.location.search);
+        const targetDate = urlParams.get('date') || '2026-06-24';
+        const targetUrl = 'landscape-ai-daily-' + targetDate + '.html';
+
+        document.getElementById('dateBadge').textContent = targetDate;
+        document.getElementById('dateBadge').classList.remove('loading');
+        document.getElementById('linkBtn').href = targetUrl;
+
+        // 可选：自动跳转（如果带了 auto=1 参数）
+        if (urlParams.get('auto') === '1') {
+            window.location.replace(targetUrl);
+        }
+    </script>
+</body>
+</html>
