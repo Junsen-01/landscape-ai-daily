@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>景观行业 AI 日报 | 源説研究社</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin:0; padding:0; box-sizing: border-box; }
         body {
             font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
             background: linear-gradient(135deg, #0a1f14 0%, #142a1c 50%, #0d2317 100%);
@@ -83,8 +83,13 @@
             animation: pulse 1.5s ease-in-out infinite;
         }
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+            0%, 100% { opacity:1; }
+            50% { opacity:0.5; }
+        }
+        .status-msg {
+            font-size: 13px;
+            color: #aaa;
+            margin-top: 12px;
         }
     </style>
 </head>
@@ -98,6 +103,7 @@
 
         <br><br>
         <a href="#" id="linkBtn" class="link-btn">查看今日日报 →</a>
+        <div class="status-msg" id="statusMsg"></div>
     </div>
 
     <div class="footer">
@@ -105,26 +111,47 @@
     </div>
 
     <script>
-        // 自动计算今天的日期
-        const today = new Date();
-        const yyyy = today.getFullYear();
-        const mm = String(today.getMonth() + 1).padStart(2, '0');
-        const dd = String(today.getDate()).padStart(2, '0');
-        const todayStr = `${yyyy}-${mm}-${dd}`;
+        const dateBadge = document.getElementById('dateBadge');
+        const linkBtn = document.getElementById('linkBtn');
+        const statusMsg = document.getElementById('statusMsg');
 
-        // 从 URL 参数获取目标日期，默认今天
-        const urlParams = new URLSearchParams(window.location.search);
-        const targetDate = urlParams.get('date') || todayStr;
-        const targetUrl = 'landscape-ai-daily-' + targetDate + '.html';
+        // 从 config.json 获取最新日报地址
+        fetch('config.json?t=' + Date.now())
+            .then(res => {
+                if (!res.ok) throw new Error('config.json 读取失败');
+                return res.json();
+            })
+            .then(config => {
+                const targetUrl = config.latestUrl;
+                const targetDate = config.date || '';
 
-        document.getElementById('dateBadge').textContent = targetDate;
-        document.getElementById('dateBadge').classList.remove('loading');
-        document.getElementById('linkBtn').href = targetUrl;
+                dateBadge.textContent = targetDate ? `📅 ${targetDate}` : '📅 今日日报';
+                dateBadge.classList.remove('loading');
+                linkBtn.href = targetUrl;
+                statusMsg.textContent = '已获取最新地址，点击按钮查看';
 
-        // 可选：自动跳转（如果带了 auto=1 参数）
-        if (urlParams.get('auto') === '1') {
-            window.location.replace(targetUrl);
-        }
+                // 可选：自动跳转（带 auto=1 参数时）
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.get('auto') === '1') {
+                    statusMsg.textContent = '正在跳转...';
+                    window.location.replace(targetUrl);
+                }
+            })
+            .catch(err => {
+                // 降级方案：直接用今天的日期拼 GitHub Pages 地址
+                console.warn('config.json 获取失败，使用降级方案:', err);
+                const today = new Date();
+                const yyyy = today.getFullYear();
+                const mm = String(today.getMonth() + 1).padStart(2, '0');
+                const dd = String(today.getDate()).padStart(2, '0');
+                const todayStr = `${yyyy}-${mm}-${dd}`;
+                const fallbackUrl = `landscape-ai-daily-${todayStr}.html`;
+
+                dateBadge.textContent = `📅 ${todayStr}（备用）`;
+                dateBadge.classList.remove('loading');
+                linkBtn.href = fallbackUrl;
+                statusMsg.textContent = '使用备用地址，建议刷新重试';
+            });
     </script>
 </body>
 </html>
